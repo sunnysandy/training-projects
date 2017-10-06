@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ajax call using json</title>
+	<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="/public/jquery.validate.min.js"></script>
+</head>
+<body>
+    <form id="validation">
+<label for="password">password</label><input type="text" name="password" id="pwd" required>
+<label for="email">email</label><input type="email" name="email" id="emailid" required><br>
+    <input type="submit" id="but" value="submit">
+    </form>
+  
+<script >
+    $(function(){
+        
+            $("#validation").validate({
+                rules:{
+                email:{
+                    required:true,
+                    email:true
+                },
+                    password:{
+                        required:true
+                },
+                    message:{
+                        email:"enter a valid mail",
+                        required:"please enter the mail address" 
+                }
+            }
+            });
+        
+	$("#but").click(function(){
+        
+        var validform=$("#validation").valid();
+                
+        	var email=$("#email").val()
+        	var password=$("#pwd").val()
+        	$.ajax({    
+        url:'/login.json',
+        datatype:'json',
+        success:function(data){
+            console.log("successfully get the data")
+            console.log(data)
+            
+            for(i=0;i<data.length;i++){
+                if(data[i].email==email&& data[i].password==password){
+                    alert("valid user")
+                    window.location.href="pagename.html"
+                    return false;
+                    }
+                }
+            alert("invalid user")
+            }
+        });
+        
+});      
+        
+        });
+        
+</script>
+
+</body>
+</html>

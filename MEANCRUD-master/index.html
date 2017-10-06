@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>    
+    <head>
+        <title> </title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    </head>
+<body>
+    
+    <div class="form-group col-md-6">
+        <label for="exampleInputEmail1">Email address</label>
+        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+    </div>
+    <button type="button" id="btnEnter" class="btn btn-default"> Enter </button>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        
+        $('#btnEnter').click(function(){
+            if($('#exampleInputEmail1').val() != ""){
+                var emailParams = JSON.stringify({name:$('#exampleInputEmail1').val()});    
+                ajaxCall('demo', emailParams);
+            }else{
+                alert('Please Enter Your Email..?');
+            }
+        });
+        
+        
+        function ajaxCall(method,params){
+            var res = "";
+            $.ajax({
+                url: "/"+ method,
+                type: "POST",
+                contentType: "application/json",
+                cache: false,
+                data:params,
+                success: function (data) {
+                    res = data.d
+                    console.log(data);
+                },
+                error: function (html) {
+                    res = html
+                }
+            });
+            return res;
+        }
+        </script>
+    </body>
+</html>

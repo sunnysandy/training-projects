@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>register page</title>
+</head>
+<body>
+<form name="regvalid">
+	<input type="text" ng-model="myname" value="">
+	<input type="button" ng-click="myfun()" name="" value="setname">
+     <p>
+      <label>FirstNAMe:</label><input type="text" name="fname" ng-model="fname" required="required">
+        <div>
+          <span style="color:red" ng-show="regvalid.fname.$touched  && regvalid.fname.$invalid">
+        <span  class=" glyphicon glyphicon-exclamation-sign" ng-show="regvalid.fname.$error.required">Username is required.</span>
+         </span>
+         </div>
+   </p>
+       <p>
+            <label>LastNAMe:</label><input type="text" name="lname" ng-model="lname" required>
+            <div>
+             <span  class=" glyphicon glyphicon-exclamation-sign" style="color:red" ng-show="regvalid.lname.$touched  && regvalid.lname.$invalid">
+               Lastname is required.</span>
+               </div>
+        </p>
+                <p>
+            	       <label>Email:</label><input type="email" name="emailname" ng-model="emailname" required="required">
+                     <div>
+                   <span style="color:red"  ng-show="regvalid.emailname.$touched && regvalid.emailname.$invalid">
+                            <span class="glyphicon glyphicon-envelope" ng-show="regvalid.emailname.$error.required">Email is required.</span>
+                            <span ng-show="regvalid.emailname.$invalid && !regvalid.emailname.$error.required">Invalid email address.</span>
+                  </span>
+                  </div>
+
+               </p>
+
+                     <p>
+
+                    <label>Password:</label><input type="password" name="pwd" ng-model="pwd" required="required">
+                    <div>
+                       <span style="color:red" ng-show="regvalid.pwd.$touched  && regvalid.pwd.$invalid">
+                        <span class="glyphicon glyphicon-lock" ng-show="regvalid.pwd.$error.required">password is required.</span>
+                       </span>
+                      </span>
+                      </div>
+                      </p>
+       <p>
+        <label>ConfromPassword:</label><input type="Password" name="conpwd" ng-model="conpwd" required="required">
+        <div>
+                 <span style="color:red" ng-show="regvalid.conpwd.$touched  && regvalid.conpwd.$invalid">
+                <span  class="glyphicon glyphicon-lock" ng-show="regvalid.conpwd.$error.required">confrompassword is required.</span>
+                 </span>
+                 <span style="color:orange" class="glyphicon glyphicon-warning-sign" ng-if="pwd!=conpwd && regvalid.conpwd.$touched">
+                 password doesnot match
+                 </span>
+             </div>
+          </p>
+
+<p>
+	<input type="submit" value="submit" ng-disabled="regvalid.fname.$invalid || regvalid.lname.$invalid || regvalid.emailname.$invalid ||  regvalid.pwd.$invalid ||  regvalid.conpwd.$invalid" ng-click='subbtn()'>
+    </p>
+</form>
+
+<script>
+
+
+
+</script>
+</body>
+</html>

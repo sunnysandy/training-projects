@@ -1,0 +1,14 @@
+{
+  "name": "ajaxcall",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "sandeep",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.2"
+  }
+}

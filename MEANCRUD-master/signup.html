@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+</head>
+<body ng-app="myApp">
+
+    <div ng-controller="myCtrl" class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <form name="userinfo" autocomplete="off">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">user name</label>
+                        <input type="text" class="form-control" id="username" placeholder="user name" name="username" required ng-model="username">
+                        <span ng-show="userinfo.username.$touched && userinfo.username.$invalid"> Please Enter Your Name...</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Email address</label>
+                        <input type="email" class="form-control" id="usermail" placeholder="Email" name="email" required ng-model="email">
+                        <span ng-show="userinfo.email.$touched && userinfo.email.$invalid"> Please Enter Your Email...</span>
+                    </div>
+                    <button type="submit" class="btn btn-default" ng-click="checkIn()">Submit</button>
+                </form>
+
+                <div>
+                    <div ng-click="demo = !demo">
+                        Error Log
+                        <pre ng-show="demo"> {{ userinfo | json }}</pre>
+                    </div>
+                </div>
+                <div>
+                    <table class="table" ng-init="getInfo()">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Sl.No
+                                </th>
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    Email
+                                </th>
+                                <th>
+                                    Id
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="data in Details | removeEmpty">
+                                <td>
+                                    <p>{{ $index + 1 }}</p>
+                                    <p ng-show="test"> <input type="text" /> </p>
+                                </td>
+                                <td>
+                                    {{ data.name }}
+                                </td>
+                                <td>
+                                    {{ data.email }}
+                                </td>
+                                <td>
+                                    {{ data._id }}
+                                </td>
+                                <td>
+                                    <a href="#" class="btn btn-default" id="edit" ng-click="EditFn(data)" style="font-size:10px;"> <span class="glyphicon glyphicon-edit"></span></a>
+                                    <a href="#" class="btn btn-default" id="Delete" ng-click="removeBtn(data)" style="font-size:10px;"> <span class="glyphicon glyphicon-remove"></span></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-4 well" ng-show="EditHide">
+                <p class="h3"> Edit InforMation </p>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">user name</label>
+                    <input type="text" class="form-control" id="Edusername"value="{{ EditInfo.name }}" ng-model="EditInfo.name" ng-cloak>                    
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Email address</label>
+                    <input type="text" class="form-control" id="Edmail" value="{{ EditInfo.email }}" ng-model="EditInfo.email" ng-cloak>
+                </div>
+                <button type="button" class="btn btn-default" ng-click="updateInfo()">Submit</button>
+                <button type="button" class="btn btn-default" ng-click="Cancel()">Cancel</button>
+            </div>
+        </div>                    
+    </div>
+    <!-- End if Controller -->
+
+
+    <script>
+        var app = angular.module('myApp', []);
+
+
+        app.filter('removeEmpty', function () {
+            return function (x) {
+                var arr = [];
+                //console.log(x);
+                angular.forEach(x, function (x, i) {
+                    //debugger
+                    if ( (x.name != "" && x.name != undefined ) && (x.email != "" && x.email != undefined)) {
+                        arr.push(x);
+                    }
+                });
+                console.log(arr);
+                return arr;
+            }
+        });
+
+        app.directive('editDir', function () { // edit-dir
+            return {
+                restrict:"EA",
+                template: '<input type="text" ng-model="EditUserName" ng-show="test"/>',
+                link: function (scope,ele,attr) {
+                    console.log(ele);
+                }
+
+            }
+        })
+
+        app.controller('myCtrl', function ($scope, $http) {
+            
+
+            $scope.checkIn = function () {
+                $scope.userDetails = { username: $scope.username, Email: $scope.email }
+                $http({
+                    method: "POST",
+                    url: "/userDetails",
+                    data: $scope.userDetails,
+                }).then(function (res) {
+                    $scope.getInfo();
+                    console.log(res);
+                }, function error(err) {
+
+                })
+            }
+            
+            $scope.getInfo = function () {                
+                $http({
+                    method: "GET",
+                    url: "/GetuserDetails",
+                    data: "",
+                }).then(function (res) {
+                    $scope.Details = res.data;
+                });
+            }
+            
+
+            $scope.updateInfo = function () {
+                $scope.usernameUpdate = $scope.EditInfo.name;
+                $scope.useremailUpdate = $scope.EditInfo.email;
+
+                $http({
+                    method: "POST",
+                    url: "/updateUserDetails",
+                    data: JSON.stringify({ updatedusername: $scope.usernameUpdate, updatedusermail: $scope.useremailUpdate }),
+                }).then(function (res) {
+                    $scope.Details = res.data;
+                    $scope.getInfo();
+                });                
+            }
+
+            $scope.EditFn = function (user) {
+                $scope.EditHide = true
+                console.log(user);
+                $scope.EditInfo = user;
+
+                //$scope.EditUserName = angular.element(event.target.parentNode.parentNode.parentNode.children)[1].innerText
+                //$scope.EditUserEmail = angular.element(event.target.parentNode.parentNode.parentNode.children)[2].innerText
+
+            }
+
+            $scope.Cancel = function () {
+                $scope.EditHide = false;
+                
+            }
+
+            $scope.removeBtn = function (user) {                
+                $scope.removeUserName = user.name
+                $scope.EditHide = false;
+                $http({
+                    method: "POST",
+                    url: "/removeUserDetails",
+                    data: JSON.stringify({ removeByusername: $scope.removeUserName })
+                }).then(function (res) {
+                    if (res.data.msg.ok > 0) {
+                        //$scope.removed = $scope.removeUserName;
+                        $scope.getInfo();
+                        alert('SuccessFully Removed...!');
+                    }
+                    
+                    
+                })
+            }
+
+            // Controller Ended Here..
+        });
+    </script>
+</body>
+</html>
